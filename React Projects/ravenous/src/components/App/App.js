@@ -3,15 +3,33 @@ import logo from './logo.svg';
 import './App.css';
 import BusinessList from "../BusinessList/BusinessList";
 import SearchBar from "../SearchBar/SearchBar";
+import Yelp from "../../util/Yelp";
 
-function App() {
-  return (
-      <div className="App">
-        <h1>ravenous</h1>
-        <SearchBar />
-        <BusinessList />
-       </div>
-  );
+//let businesses=[business,business,business,business,business,business];
+
+class App extends React.Component{
+    constructor(){
+        super();
+        this.state = {
+            businesses: []
+        };
+        this.searchYelp=this.searchYelp.bind(this);
+    }
+    searchYelp(term,location,sortBy){
+        Yelp.search(term,location,sortBy).then(businesses=>{
+            this.setState({businesses: businesses});
+        });
+       // console.log(`Searching Yelp with ${term}, ${location}, ${sortBy}`)
+    }
+    render() {
+        return (
+            <div className="App">
+                <h1>ravenous</h1>
+                <SearchBar searchYelp={this.searchYelp}/>
+                <BusinessList businesses={this.state.businesses}/>
+            </div>
+        );
+    }
 }
 
 export default App;
